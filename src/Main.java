@@ -1,28 +1,31 @@
-import java.io.File;
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int validFileCount = 0;
+        // Пример использования класса Sauce
+        Sauce sauce1 = new Sauce("Чили", Sauce.Spiciness.VERY_SPICY);
+        Sauce sauce2 = new Sauce("Кетчуп", Sauce.Spiciness.NOT_SPICY);
 
-        while (true) {
-            System.out.println("Введите путь к файлу:");
-            String path = scanner.nextLine();
+        System.out.println(sauce1);
+        System.out.println(sauce2);
+    }
+}
 
-            File file = new File(path);
-            boolean fileExists = file.exists();
-            boolean isDirectory = file.isDirectory();
+class Sauce {
+    private String name;
+    private Spiciness spiciness;
 
+    public enum Spiciness {
+        VERY_SPICY,
+        SPICY,
+        NOT_SPICY
+    }
 
-            if (!fileExists || isDirectory) {
-                System.out.println("Файл не существует или указан путь к директории");
-                continue;
-            }
+    public Sauce(String name, Spiciness spiciness) {
+        this.name = name;
+        this.spiciness = spiciness;
+    }
 
-            validFileCount++;
-            System.out.println("Путь указан верно");
-            System.out.println("Это файл номер " + validFileCount);
-        }
+    @Override
+    public String toString() {
+        return "Соус " + name + ": " + spiciness.toString().toLowerCase().replace('_', ' ');
     }
 }

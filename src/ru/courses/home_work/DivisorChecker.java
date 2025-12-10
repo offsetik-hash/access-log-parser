@@ -1,3 +1,5 @@
+package ru.courses.home_work;
+
 public class DivisorChecker {
 
     public static boolean isDivisor(int a, int b) {

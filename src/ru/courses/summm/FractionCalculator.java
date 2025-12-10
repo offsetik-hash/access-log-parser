@@ -1,3 +1,5 @@
+package ru.courses.summm;
+
 public class FractionCalculator {
 
     public static double fraction(double x) {

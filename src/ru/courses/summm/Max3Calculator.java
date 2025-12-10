@@ -1,3 +1,5 @@
+package ru.courses.summm;
+
 public class Max3Calculator {
 
     public static int max3(int x, int y, int z) {

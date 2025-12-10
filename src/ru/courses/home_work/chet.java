@@ -1,3 +1,5 @@
+package ru.courses.home_work;
+
 public class chet {
     public static void main(String[] args) {
         System.out.println(chet(31));

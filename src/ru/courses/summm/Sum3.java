@@ -1,3 +1,5 @@
+package ru.courses.summm;
+
 public class Sum3 {
 
     public static boolean sum3(int x, int y, int z) {

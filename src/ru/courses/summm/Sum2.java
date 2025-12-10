@@ -1,3 +1,5 @@
+package ru.courses.summm;
+
 public class Sum2 {
     public static int sum2(int x, int y) {
         int sum = x + y;
