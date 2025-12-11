@@ -4,73 +4,59 @@ import java.io.IOException;
 
 public class LogFileAnalyzer {
     public static void main(String[] args) {
+        int googlebotCount = 0;
+        int yandexbotCount = 0;
+        int totalCount = 0;
 
-        if (args.length == 0) {
-            System.err.println("Не указан путь к файлу.");
-            return;
-        }
-
-        String path = args[0];
-
-        // Проверка, что указанный путь является файлом
-        if (!isFile(path)) {
-            System.err.println("Указанный путь не является файлом.");
-            return;
-        }
-
-        try {
-            int totalLines = 0;
-            int maxLength = 0;
-            int minLength = Integer.MAX_VALUE;
-
-            try (FileReader fileReader = new FileReader(path);
-                 BufferedReader reader = new BufferedReader(fileReader)) {
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    totalLines++;
-                    int length = line.length();
-
-                    // Проверка длины строки
-                    if (length > 1024) {
-                        throw new LineTooLongException("Строка длиннее 1024 символов.");
-                    }
-
-                    // Обновление максимальной и минимальной длины строки
-                    if (length > maxLength) {
-                        maxLength = length;
-                    }
-
-                    if (length < minLength) {
-                        minLength = length;
-                    }
+        try (BufferedReader br = new BufferedReader(new FileReader("access.log"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                totalCount++;
+                if (line.length() > 1024) {
+                    throw new IllegalArgumentException("Строка слишком длинная");
                 }
 
-                // Вывод результатов
-                System.out.println("Общее количество строк в файле: " + totalLines);
-                System.out.println("Длина самой длинной строки в файле: " + maxLength);
-                System.out.println("Длина самой короткой строки в файле: " + minLength);
+                String userAgent = extractUserAgent(line);
+                if (userAgent != null) {
+                    String[] parts = userAgent.split(";");
+                    if (parts.length >= 2) {
+                        String fragment = parts[1].trim();
+                        String botName = fragment.split("/")[0].trim();
 
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (LineTooLongException ex) {
-                ex.printStackTrace();
+                        if ("Googlebot".equals(botName)) {
+                            googlebotCount++;
+                        } else if ("YandexBot".equals(botName)) {
+                            yandexbotCount++;
+                        }
+                    }
+                }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Ошибка при чтении файла: " + e.getMessage());
+            return;
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            return;
         }
+
+        if (totalCount == 0) {
+            System.out.println("Файл не содержит строк для анализа/может пустой");
+            return;
+        }
+
+        double googlebotShare = (double) googlebotCount / totalCount * 100;
+        double yandexbotShare = (double) yandexbotCount / totalCount * 100;
+
+        System.out.println("Доля запросов от Googlebot: " + googlebotShare + "%");
+        System.out.println("Доля запросов от YandexBot: " + yandexbotShare + "%");
     }
 
-    // Метод для проверки, является ли указанный путь файлом
-    private static boolean isFile(String path) {
-        java.io.File file = new java.io.File(path);
-        return file.isFile();
-    }
-}
-
-// Класс для обработки строки, превышающей допустимую длину
-class LineTooLongException extends RuntimeException {
-    public LineTooLongException(String message) {
-        super(message);
+    private static String extractUserAgent(String line) {
+        int start = line.indexOf("(");
+        int end = line.indexOf(")");
+        if (start != -1 && end != -1 && end > start) {
+            return line.substring(start, end + 1);
+        }
+        return null;
     }
 }
