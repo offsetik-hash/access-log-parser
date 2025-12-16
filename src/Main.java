@@ -28,15 +28,30 @@ public class Main {
             System.out.println(page);
         }
 
-        // Вывод статистики операционных систем
+        // Вывод списка всех несуществующих страниц
+        System.out.println("\nList of non-existent pages:");
+        for (String page : statistics.getNonExistentPages()) {
+            System.out.println(page);
+        }
+
+        // ос
         System.out.println("\nOperating System Distribution:");
         Map<String, Double> osDistribution = statistics.getOsDistribution();
-
-        double sumOfDistributions = 0.0;
+        double sumOfOsDistributions = 0.0;
         for (Map.Entry<String, Double> entry : osDistribution.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
-            sumOfDistributions += entry.getValue();
+            sumOfOsDistributions += entry.getValue();
         }
-        System.out.println("\nSum of distributions: " + sumOfDistributions);
+        System.out.println("\nSum of OS distributions: " + sumOfOsDistributions);
+
+        //  браузеры
+        System.out.println("\nBrowser Distribution:");
+        Map<String, Double> browserDistribution = statistics.getBrowserDistribution();
+        double sumOfBrowserDistributions = 0.0;
+        for (Map.Entry<String, Double> entry : browserDistribution.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+            sumOfBrowserDistributions += entry.getValue();
+        }
+        System.out.println("\nSum of browser distributions: " + sumOfBrowserDistributions);
     }
 }
